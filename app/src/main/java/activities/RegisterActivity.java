@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
+import helper.Base64Custom;
 import models.User;
 import pedroadmn.example.organizzeclone.R;
 
@@ -70,6 +71,9 @@ public class RegisterActivity extends AppCompatActivity {
         getFirebaseAuth().createUserWithEmailAndPassword(user.getEmail(), user.getPassword())
                 .addOnCompleteListener(this, task -> {
                    if (task.isSuccessful()) {
+                       String userId = Base64Custom.encondeBase64(user.getEmail());
+                       user.setId(userId);
+                       user.save();
                        Toast.makeText(RegisterActivity.this, "Success on register user", Toast.LENGTH_LONG).show();
                        finish();
                    } else {
