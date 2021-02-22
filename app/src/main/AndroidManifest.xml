@@ -9,10 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name="activities.ExpenseActivity"
+            android:theme="@style/ExpenseTheme"/>
+        <activity android:name="activities.RevenueActivity"
+            android:theme="@style/RevenueTheme" />
         <activity
             android:name="activities.HomeActivity"
             android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name="activities.RegisterActivity" />
         <activity android:name="activities.LoginActivity" />
         <activity

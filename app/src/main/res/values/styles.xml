@@ -6,4 +6,22 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    <style name="ExpenseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorPrimaryExpense</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkExpense</item>
+        <item name="colorAccent">@color/colorAccentExpense</item>
+    </style>
+
+    <style name="RevenueTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorPrimaryRevenue</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkRevenue</item>
+        <item name="colorAccent">@color/colorAccentRevenue</item>
+    </style>
 </resources>
