@@ -71,6 +71,7 @@ public class RegisterActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                    if (task.isSuccessful()) {
                        Toast.makeText(RegisterActivity.this, "Success on register user", Toast.LENGTH_LONG).show();
+                       finish();
                    } else {
                        String exceptionMessage = "";
                        try {

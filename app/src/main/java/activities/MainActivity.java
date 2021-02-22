@@ -9,6 +9,8 @@ import com.heinrichreimersoftware.materialintro.slide.FragmentSlide;
 
 import pedroadmn.example.organizzeclone.R;
 
+import static config.FirebaseConfig.getFirebaseAuth;
+
 public class MainActivity extends IntroActivity {
 
     @Override
@@ -50,6 +52,13 @@ public class MainActivity extends IntroActivity {
         );
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        verifyLoggedUser();
+    }
+
     public void goToLogin(View view) {
         startActivity(new Intent(this, LoginActivity.class));
     }
@@ -57,4 +66,15 @@ public class MainActivity extends IntroActivity {
     public void goToRegister(View view) {
         startActivity(new Intent(this, RegisterActivity.class));
     }
+
+    private void verifyLoggedUser() {
+        if (getFirebaseAuth().getCurrentUser() != null) {
+            goToHomeActivity();
+        }
+    }
+
+    private void goToHomeActivity() {
+        startActivity(new Intent(this, HomeActivity.class));
+    }
+
 }
