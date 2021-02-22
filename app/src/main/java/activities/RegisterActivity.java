@@ -3,11 +3,15 @@ package activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
 import models.User;
 import pedroadmn.example.organizzeclone.R;
@@ -33,7 +37,11 @@ public class RegisterActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnRegister = findViewById(R.id.btnRegister);
 
-        btnRegister.setOnClickListener(view -> {
+        btnRegister.setOnClickListener(onRegister());
+    }
+
+    private View.OnClickListener onRegister() {
+        return view -> {
             String name = etName.getText().toString();
             String email = etEmail.getText().toString();
             String password = etPassword.getText().toString();
@@ -55,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(RegisterActivity.this, "Fill the name", Toast.LENGTH_LONG).show();
             }
-        });
+        };
     }
 
     private void registerUser(User user) {
@@ -64,7 +72,20 @@ public class RegisterActivity extends AppCompatActivity {
                    if (task.isSuccessful()) {
                        Toast.makeText(RegisterActivity.this, "Success on register user", Toast.LENGTH_LONG).show();
                    } else {
-                       Toast.makeText(RegisterActivity.this, "Error on register user", Toast.LENGTH_LONG).show();
+                       String exceptionMessage = "";
+                       try {
+                           throw task.getException();
+                       } catch (FirebaseAuthWeakPasswordException exception) {
+                           exceptionMessage = "Type a stronger password";
+                       } catch (FirebaseAuthInvalidCredentialsException exception) {
+                           exceptionMessage = "Please, type a valid email";
+                       } catch (FirebaseAuthUserCollisionException exception) {
+                           exceptionMessage = "This account already exists";
+                       } catch (Exception exception) {
+                           exceptionMessage = "Error on register user";
+                           exception.printStackTrace();
+                       }
+                       Toast.makeText(RegisterActivity.this, exceptionMessage, Toast.LENGTH_LONG).show();
                    }
                 });
     }
