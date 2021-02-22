@@ -38,12 +38,15 @@
 
     <Button
         android:id="@+id/btnRegister"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:backgroundTint="@android:color/darker_gray"
+        android:layout_marginEnd="32dp"
         android:onClick="goToRegister"
+        android:textColor="@android:color/white"
         android:text="Register"
+        android:background="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/tvIhaveAnAccount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.506"
