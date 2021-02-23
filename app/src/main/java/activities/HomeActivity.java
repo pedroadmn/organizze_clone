@@ -1,5 +1,6 @@
 package activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -12,6 +13,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -22,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Adapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -57,6 +60,8 @@ public class HomeActivity extends AppCompatActivity {
     private Double totalRevenue = 0.0;
     private Double balance = 0.0;
     private String selectedMonthYear;
+
+    private Movement movement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,8 +148,10 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 movementList.clear();
-                for(DataSnapshot movement : snapshot.getChildren()) {
-                    movementList.add(movement.getValue(Movement.class));
+                for(DataSnapshot data : snapshot.getChildren()) {
+                    Movement movement = data.getValue(Movement.class);
+                    movement.setId(data.getKey());
+                    movementList.add(movement);
                 }
 
                 movementAdapter.notifyDataSetChanged();
@@ -201,11 +208,43 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
+                deleteMovement(viewHolder);
             }
         };
 
         new ItemTouchHelper(itemTouch).attachToRecyclerView(rvMovements);
+    }
+
+    private void deleteMovement(RecyclerView.ViewHolder viewHolder) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+        alertDialog.setTitle("Delete Account Movement");
+        alertDialog.setMessage("Are you sure that you really wish delete this movement?");
+        alertDialog.setCancelable(false);
+
+        alertDialog.setPositiveButton("Confirm", (dialogInterface, i) -> {
+            int position = viewHolder.getAdapterPosition();
+            movement = movementList.get(position);
+
+            String userEmail = firebaseAuth.getCurrentUser().getEmail();
+            String userId = Base64Custom.encondeBase64(userEmail);
+            movementRef = databaseRef.child("movements")
+                    .child(userId)
+                    .child(selectedMonthYear)
+                    .child(movement.getId());
+
+            movementRef.removeValue();
+
+            movementAdapter.notifyItemRemoved(position);
+        });
+
+        alertDialog.setNegativeButton("Cancel", (dialogInterface, i) -> {
+            Toast.makeText(HomeActivity.this, "Canceled", Toast.LENGTH_LONG).show();
+            movementAdapter.notifyDataSetChanged();
+        });
+
+        AlertDialog alert = alertDialog.create();
+        alert.show();
     }
 
     @Override

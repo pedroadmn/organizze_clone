@@ -8,6 +8,7 @@ import static config.FirebaseConfig.getFirebaseDatabase;
 
 public class Movement {
 
+    private String id;
     private String date;
     private String category;
     private String description;
@@ -16,6 +17,14 @@ public class Movement {
 
     public Movement() {
 
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getDate() {
