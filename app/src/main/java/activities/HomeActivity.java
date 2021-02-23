@@ -236,6 +236,8 @@ public class HomeActivity extends AppCompatActivity {
             movementRef.removeValue();
 
             movementAdapter.notifyItemRemoved(position);
+
+            updateBalance();
         });
 
         alertDialog.setNegativeButton("Cancel", (dialogInterface, i) -> {
@@ -245,6 +247,19 @@ public class HomeActivity extends AppCompatActivity {
 
         AlertDialog alert = alertDialog.create();
         alert.show();
+    }
+
+    private void updateBalance() {
+        String userEmail = firebaseAuth.getCurrentUser().getEmail();
+        String userId = Base64Custom.encondeBase64(userEmail);
+        userRef = databaseRef.child("users").child(userId);
+        if("r".equals(movement.getType())) {
+            totalRevenue = totalRevenue - movement.getValue();
+            userRef.child("totalRevenue").setValue(totalRevenue);
+        } else {
+            totalExpenses = totalExpenses - movement.getValue();
+            userRef.child("totalExpense").setValue(totalExpenses);
+        }
     }
 
     @Override
