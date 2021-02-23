@@ -76,5 +76,4 @@ public class MainActivity extends IntroActivity {
     private void goToHomeActivity() {
         startActivity(new Intent(this, HomeActivity.class));
     }
-
 }
