@@ -70,6 +70,8 @@ public class ExpenseActivity extends AppCompatActivity {
             updateExpenses(updatedExpense);
 
             moviment.save();
+
+            finish();
         }
     }
 

@@ -69,6 +69,8 @@ public class RevenueActivity extends AppCompatActivity {
             updateExpenses(updatedRevenue);
 
             moviment.save();
+
+            finish();
         }
     }
 
