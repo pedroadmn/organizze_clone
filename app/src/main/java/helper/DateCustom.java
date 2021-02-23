@@ -9,4 +9,12 @@ public class DateCustom {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyy");
         return simpleDateFormat.format(date);
     }
+
+    public static String monthYearChoseDate(String date) {
+        String resultDate[] = date.split("/");
+        String month = resultDate[0];
+        String year = resultDate[2];
+
+        return month + year;
+    }
 }
