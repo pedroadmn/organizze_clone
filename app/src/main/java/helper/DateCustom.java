@@ -6,7 +6,7 @@ public class DateCustom {
 
     public static String currentDate() {
         long date = System.currentTimeMillis();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
         return simpleDateFormat.format(date);
     }
 

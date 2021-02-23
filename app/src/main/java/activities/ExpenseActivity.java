@@ -17,7 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import config.FirebaseConfig;
 import helper.Base64Custom;
-import models.Moviment;
+import models.Movement;
 import models.User;
 import pedroadmn.example.organizzeclone.R;
 
@@ -30,7 +30,7 @@ public class ExpenseActivity extends AppCompatActivity {
     private TextInputEditText etDescription;
     private EditText etTotalExpense;
     private FloatingActionButton fabSaveExpense;
-    private Moviment moviment;
+    private Movement moviment;
     private Double totalExpense;
     private Double generatedExpense;
 
@@ -58,7 +58,7 @@ public class ExpenseActivity extends AppCompatActivity {
     private void saveExpense() {
         if (validateExpenseFields()) {
             Double recoveredValue = Double.parseDouble(etTotalExpense.getText().toString());
-            moviment = new Moviment();
+            moviment = new Movement();
             moviment.setValue(recoveredValue);
             moviment.setCategory(etCategory.getText().toString());
             moviment.setDescription(etDescription.getText().toString());

@@ -6,7 +6,7 @@ import helper.DateCustom;
 import static config.FirebaseConfig.getFirebaseAuth;
 import static config.FirebaseConfig.getFirebaseDatabase;
 
-public class Moviment {
+public class Movement {
 
     private String date;
     private String category;
@@ -14,7 +14,7 @@ public class Moviment {
     private String type;
     private Double value;
 
-    public Moviment() {
+    public Movement() {
 
     }
 
@@ -62,7 +62,7 @@ public class Moviment {
         String userId = Base64Custom.encondeBase64(getFirebaseAuth().getCurrentUser().getEmail());
         String monthYear = DateCustom.monthYearChoseDate(this.date);
 
-        getFirebaseDatabase().child("moviments")
+        getFirebaseDatabase().child("movements")
                 .child(userId)
                 .child(monthYear)
                 .push()

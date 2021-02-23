@@ -17,7 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import config.FirebaseConfig;
 import helper.Base64Custom;
-import models.Moviment;
+import models.Movement;
 import models.User;
 import pedroadmn.example.organizzeclone.R;
 
@@ -29,7 +29,7 @@ public class RevenueActivity extends AppCompatActivity {
     private TextInputEditText etDescription;
     private EditText etTotalRevenue;
     private FloatingActionButton fabSaveRevenue;
-    private Moviment moviment;
+    private Movement moviment;
     private Double totalRevenue;
     private Double generatedRevenue;
 
@@ -57,7 +57,7 @@ public class RevenueActivity extends AppCompatActivity {
     private void saveRevenue() {
         if (validateRevenueFields()) {
             Double recoveredValue = Double.parseDouble(etTotalRevenue.getText().toString());
-            moviment = new Moviment();
+            moviment = new Movement();
             moviment.setValue(recoveredValue);
             moviment.setCategory(etCategory.getText().toString());
             moviment.setDescription(etDescription.getText().toString());

@@ -3,8 +3,6 @@ package activities;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -12,25 +10,28 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.Adapter;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
+import adapters.MovementAdapter;
 import config.FirebaseConfig;
 import helper.Base64Custom;
+import models.Movement;
 import models.User;
 import pedroadmn.example.organizzeclone.R;
-
-import static config.FirebaseConfig.getFirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -40,15 +41,21 @@ public class HomeActivity extends AppCompatActivity {
     private MaterialCalendarView calendarView;
     private TextView tvGreetings;
     private TextView tvBalance;
+    private RecyclerView rvMovements;
+    private MovementAdapter movementAdapter;
+    private List<Movement> movementList = new ArrayList<>();
 
     private FirebaseAuth firebaseAuth = FirebaseConfig.getFirebaseAuth();
     private DatabaseReference databaseRef = FirebaseConfig.getFirebaseDatabase();
     private DatabaseReference userRef;
+    private DatabaseReference movementRef;
     private ValueEventListener userValueEventListener;
+    private ValueEventListener movementValueEventListener;
 
     private Double totalExpenses = 0.0;
     private Double totalRevenue = 0.0;
     private Double balance = 0.0;
+    private String selectedMonthYear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +64,7 @@ public class HomeActivity extends AppCompatActivity {
 
         tvGreetings = findViewById(R.id.tvGreetings);
         tvBalance = findViewById(R.id.tvBalance);
+        rvMovements = findViewById(R.id.rvMoviments);
         calendarView = findViewById(R.id.calendarView);
         setupCalendarView();
 
@@ -69,6 +77,14 @@ public class HomeActivity extends AppCompatActivity {
 
         fabRevenue = findViewById(R.id.fabRevenue);
         fabRevenue.setOnClickListener(v -> goToRevenue());
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        movementAdapter = new MovementAdapter(movementList, this);
+
+        rvMovements.setLayoutManager(layoutManager);
+        rvMovements.setHasFixedSize(true);
+
+        rvMovements.setAdapter(movementAdapter);
     }
 
     private void goToExpense() {
@@ -82,8 +98,17 @@ public class HomeActivity extends AppCompatActivity {
     private void setupCalendarView() {
         CharSequence months[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
         calendarView.setTitleMonths(months);
-        calendarView.setOnMonthChangedListener((widget, date) -> {
 
+        CalendarDay calendarDate = calendarView.getCurrentDate();
+        String selectedMonth = String.format("%02d", calendarDate.getMonth());
+
+        selectedMonthYear = selectedMonth + calendarDate.getYear();
+
+        calendarView.setOnMonthChangedListener((widget, date) -> {
+            String chosenMonth = String.format("%02d", date.getMonth());
+            selectedMonthYear = chosenMonth + "" + date.getYear();
+            movementRef.removeEventListener(movementValueEventListener);
+            getMovements();
         });
     }
 
@@ -103,6 +128,32 @@ public class HomeActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getMovements() {
+        String userEmail = firebaseAuth.getCurrentUser().getEmail();
+        String userId = Base64Custom.encondeBase64(userEmail);
+        movementRef = databaseRef.child("movements")
+                                 .child(userId)
+                                 .child(selectedMonthYear);
+
+        movementValueEventListener = movementRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                movementList.clear();
+                for(DataSnapshot movement : snapshot.getChildren()) {
+                    movementList.add(movement.getValue(Movement.class));
+                }
+
+                movementAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     private void getUserInfo() {
@@ -136,6 +187,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         getUserInfo();
+        getMovements();
     }
 
     @Override
@@ -143,6 +195,9 @@ public class HomeActivity extends AppCompatActivity {
         super.onStop();
         if (userRef != null) {
             userRef.removeEventListener(userValueEventListener);
+        }
+        if (movementRef != null) {
+            movementRef.removeEventListener(movementValueEventListener);
         }
     }
 }
