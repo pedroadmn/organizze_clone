@@ -14,6 +14,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -67,6 +68,7 @@ public class HomeActivity extends AppCompatActivity {
         rvMovements = findViewById(R.id.rvMoviments);
         calendarView = findViewById(R.id.calendarView);
         setupCalendarView();
+        swipe();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Organizze Clone");
@@ -181,6 +183,29 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void swipe() {
+        ItemTouchHelper.Callback itemTouch = new ItemTouchHelper.Callback() {
+            @Override
+            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                int dragFlags = ItemTouchHelper.ACTION_STATE_IDLE;
+                int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+                return makeMovementFlags(dragFlags, swipeFlags);
+            }
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+            }
+        };
+
+        new ItemTouchHelper(itemTouch).attachToRecyclerView(rvMovements);
     }
 
     @Override
