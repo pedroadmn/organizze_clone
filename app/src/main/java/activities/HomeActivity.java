@@ -43,6 +43,8 @@ public class HomeActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth = FirebaseConfig.getFirebaseAuth();
     private DatabaseReference databaseRef = FirebaseConfig.getFirebaseDatabase();
+    private DatabaseReference userRef;
+    private ValueEventListener userValueEventListener;
 
     private Double totalExpenses = 0.0;
     private Double totalRevenue = 0.0;
@@ -57,8 +59,6 @@ public class HomeActivity extends AppCompatActivity {
         tvBalance = findViewById(R.id.tvBalance);
         calendarView = findViewById(R.id.calendarView);
         setupCalendarView();
-
-        getUserInfo();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Organizze Clone");
@@ -108,9 +108,9 @@ public class HomeActivity extends AppCompatActivity {
     private void getUserInfo() {
         String userEmail = firebaseAuth.getCurrentUser().getEmail();
         String userId = Base64Custom.encondeBase64(userEmail);
-        DatabaseReference usersRef = databaseRef.child("users").child(userId);
+        userRef = databaseRef.child("users").child(userId);
 
-        usersRef.addValueEventListener(new ValueEventListener() {
+        userValueEventListener = userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
@@ -130,5 +130,19 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getUserInfo();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (userRef != null) {
+            userRef.removeEventListener(userValueEventListener);
+        }
     }
 }
