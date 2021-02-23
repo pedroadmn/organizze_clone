@@ -9,13 +9,18 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import pedroadmn.example.organizzeclone.R;
+
+import static config.FirebaseConfig.getFirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -37,6 +42,7 @@ public class HomeActivity extends AppCompatActivity {
         setupCalendarView();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Organizze Clone");
         setSupportActionBar(toolbar);
 
         fabExpense = findViewById(R.id.fabExpense);
@@ -60,5 +66,23 @@ public class HomeActivity extends AppCompatActivity {
         calendarView.setOnMonthChangedListener((widget, date) -> {
 
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.Signout:
+                getFirebaseAuth().signOut();
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

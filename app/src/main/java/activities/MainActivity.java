@@ -68,6 +68,7 @@ public class MainActivity extends IntroActivity {
     }
 
     private void verifyLoggedUser() {
+//        getFirebaseAuth().signOut();
         if (getFirebaseAuth().getCurrentUser() != null) {
             goToHomeActivity();
         }
