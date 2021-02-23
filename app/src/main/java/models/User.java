@@ -11,6 +11,8 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private Double totalRevenue = 0.00;
+    private Double totalExpense = 0.00;
 
     public User() {
     }
@@ -47,6 +49,22 @@ public class User {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Double getTotalRevenue() {
+        return totalRevenue;
+    }
+
+    public void setTotalRevenue(Double totalRevenue) {
+        this.totalRevenue = totalRevenue;
+    }
+
+    public Double getTotalExpense() {
+        return totalExpense;
+    }
+
+    public void setTotalExpense(Double totalExpense) {
+        this.totalExpense = totalExpense;
     }
 
     public void save() {
